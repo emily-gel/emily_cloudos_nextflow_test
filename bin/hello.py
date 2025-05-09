@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import click
 
 @click.command()
@@ -11,8 +10,8 @@ import click
 )
 def hello(greeting: str):
 
-    with open("output.txt", "w") as f:
-      f.write(f"{greeting}, World!")
+    myFile = file('test_output.txt')
+    myFile.text = f"{greeting}, World!"
 
 if __name__ == "__main__":
     hello()
