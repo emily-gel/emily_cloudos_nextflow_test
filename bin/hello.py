@@ -9,8 +9,10 @@ import click
     help="A greeting.",
 )
 def hello(greeting: str):
-    
-    print(f"{greeting}, World!")
+
+    out = open(output, "w") 
+    out.write(f"{greeting}, World!") 
+    out.close()
 
 if __name__ == "__main__":
     hello()
