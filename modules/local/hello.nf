@@ -7,7 +7,7 @@ process HELLO {
     val greeting
 
     output:
-    path "output.txt"
+    path "${greeting}_output.txt"
 
     script: 
     """
