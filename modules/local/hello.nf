@@ -11,6 +11,6 @@ process HELLO {
 
     script: 
     """
-    hello.r --greeting ${greeting}
+    hello.py --greeting ${greeting}
     """
 }
