@@ -10,7 +10,7 @@ import click
 )
 def hello(greeting: str):
 
-    out = open(output, "w") 
+    out = open("output.txt", "w") 
     out.write(f"{greeting}, World!") 
     out.close()
 
