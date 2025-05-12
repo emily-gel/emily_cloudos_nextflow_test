@@ -9,9 +9,8 @@ import click
     help="A greeting.",
 )
 def hello(greeting: str):
-
-    with open("output.txt", "w") as f:
-      f.write(f"{greeting}, World!")
+    
+    print(f"{greeting}, World!")
 
 if __name__ == "__main__":
     hello()
