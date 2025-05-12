@@ -6,9 +6,6 @@ process HELLO {
     input: 
     val greeting
 
-    output:
-    path("${greeting}.txt")
-
     script: 
     """
     hello.py --greeting ${greeting}
