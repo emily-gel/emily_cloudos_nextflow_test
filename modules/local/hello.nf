@@ -14,3 +14,10 @@ process HELLO {
     hello.py --greeting ${greeting}
     """
 }
+
+process SETUP {
+    script:
+    """
+    pip3 install mysql
+    """
+}
