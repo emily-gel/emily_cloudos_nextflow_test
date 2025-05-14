@@ -9,11 +9,34 @@ import mysql.connector
     required=True,
     help="A greeting.",
 )
-def hello(greeting: str):
+
+version = "source_data_100kv16_covidv4"
+
+def query_to_df(sql_query, database):
+    connection = psycopg2.connect(
+        dbname = "gel_clinical_cb_sql_pro",
+        options = f"-c search_path=source_data_100kv16_covidv4",
+        host = "clinical-cb-sql-pro.cfe5cdx3wlef.eu-west-2.rds.amazonaws.com",
+        port = 5432,
+        password = 'anXReTz36Q5r',
+        user = 'jupyter_notebook'
+    )
+return(pd.read_sql_query(sql_query, connection))
+
+def query(greeting: str):
+
+    hes_sql = (f'''
+    SELECT participant_id, arrivaldate, diag_all
+    FROM hes_ae
+    WHERE participant_id = {greeting}
+    ''')
+
+    hes_query = labkey_to_df(hes_sql, version, 1000)
+    hes_query
 
     out = open("output.txt", "w") 
-    out.write(f"{greeting}, World!") 
+    out.write(hes_query) 
     out.close()
 
 if __name__ == "__main__":
-    hello()
+    query()
