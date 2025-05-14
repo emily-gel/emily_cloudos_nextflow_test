@@ -19,7 +19,7 @@ def query_to_df(sql_query, database):
         password = 'anXReTz36Q5r',
         user = 'jupyter_notebook'
     )
-return(pd.read_sql_query(sql_query, connection))
+    return(pd.read_sql_query(sql_query, connection))
 
 def query(greeting: str):
 
