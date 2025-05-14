@@ -10,8 +10,6 @@ import mysql.connector
     help="A greeting.",
 )
 
-version = "source_data_100kv16_covidv4"
-
 def query_to_df(sql_query, database):
     connection = psycopg2.connect(
         dbname = "gel_clinical_cb_sql_pro",
@@ -25,13 +23,15 @@ return(pd.read_sql_query(sql_query, connection))
 
 def query(greeting: str):
 
+    version = "source_data_100kv16_covidv4"
+    
     hes_sql = (f'''
-    SELECT participant_id, arrivaldate, diag_all
-    FROM hes_ae
-    WHERE participant_id = {greeting}
-    ''')
+        SELECT participant_id, arrivaldate, diag_all
+        FROM hes_ae
+        WHERE participant_id = {greeting}
+        ''')
 
-    hes_query = labkey_to_df(hes_sql, version, 1000)
+    hes_query = query_to_df(hes_sql, version)
     hes_query
 
     out = open("output.txt", "w") 
