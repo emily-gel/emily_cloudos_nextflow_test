@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import click
-import mysql.connector
+import psycopg2
+import pandas as pd
+import numpy as np
 
 @click.command()
 @click.option(
