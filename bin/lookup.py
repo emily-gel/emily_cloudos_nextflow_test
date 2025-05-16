@@ -7,7 +7,7 @@ import numpy as np
 @click.command()
 @click.option(
     "--participant_id",
-    type=num,
+    type=int,
     required=True,
 )
 
@@ -22,7 +22,7 @@ def query_to_df(sql_query, database):
     )
     return(pd.read_sql_query(sql_query, connection))
 
-def query(participant_id: num):
+def query(participant_id: int):
 
     version = "source_data_100kv16_covidv4"
     
