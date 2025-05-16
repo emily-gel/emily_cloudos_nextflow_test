@@ -7,10 +7,10 @@ process HELLO {
     val greeting
 
     output:
-    path "${greeting}_output.txt"
+    path "${id}_output.txt"
 
     script: 
     """
-    hello.py --greeting ${greeting}
+    hello.py --id ${id}
     """
 }
