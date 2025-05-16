@@ -1,4 +1,4 @@
-process HELLO { 
+process LOOKUP { 
     debug true
 
     publishDir path: "results"
