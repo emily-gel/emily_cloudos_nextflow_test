@@ -11,6 +11,6 @@ process LOOKUP {
 
     script: 
     """
-    hello.py --id ${id}
+    lookup.py --id ${id}
     """
 }
