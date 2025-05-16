@@ -6,10 +6,9 @@ import numpy as np
 
 @click.command()
 @click.option(
-    "--greeting",
-    type=str,
+    "--participant_id",
+    type=num,
     required=True,
-    help="A greeting.",
 )
 
 def query_to_df(sql_query, database):
@@ -23,14 +22,14 @@ def query_to_df(sql_query, database):
     )
     return(pd.read_sql_query(sql_query, connection))
 
-def query(greeting: str):
+def query(participant_id: num):
 
     version = "source_data_100kv16_covidv4"
     
     hes_sql = (f'''
         SELECT participant_id, arrivaldate, diag_all
         FROM hes_ae
-        WHERE participant_id = {greeting}
+        WHERE participant_id = {participant_id}
         ''')
 
     hes_query = query_to_df(hes_sql, version)
