@@ -4,7 +4,7 @@ process HELLO {
     publishDir path: "results"
 
     input: 
-    val greeting
+    val id
 
     output:
     path "${id}_output.txt"
