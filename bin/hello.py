@@ -23,7 +23,7 @@ def query_to_df(sql_query, database):
     )
     return(pd.read_sql_query(sql_query, connection))
 
-def query(greeting):
+def query(greeting: str):
 
     version = "source_data_100kv16_covidv4"
     
@@ -41,4 +41,4 @@ def query(greeting):
     out.close()
 
 if __name__ == "__main__":
-    query(greeting)
+    query()
