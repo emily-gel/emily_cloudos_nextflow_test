@@ -1,6 +1,6 @@
-include { HELLO } from "./modules/local/hello.nf"
+include { LOOKUP } from "./modules/local/lookup.nf"
 
 workflow {
     ch_id = Channel.of(params.id) 
-    HELLO(ch_id)
+    lookup(ch_id)
 }
