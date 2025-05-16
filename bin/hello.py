@@ -23,7 +23,7 @@ def query_to_df(sql_query, database):
     )
     return(pd.read_sql_query(sql_query, connection))
 
-def query(greeting: str):
+def query(greeting):
 
     version = "source_data_100kv16_covidv4"
     
