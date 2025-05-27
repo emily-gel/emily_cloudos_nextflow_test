@@ -1,11 +1,28 @@
 #!/usr/bin/env python3
+import os
 import click
-import psycopg2
+# import psycopg2
 import pandas as pd
 import numpy as np
+from sqlalchemy import create_engine
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
 
-def query_to_df(sql_query, database):
+dbname = os.getenv("DB_NAME")
+options = os.getenv("DB_OPTIONS")
+user = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
+host = os.getenv("DB_HOST")
+port = os.getenv("DB_PORT")
+
+# Ensure that the environment variables are set
+if not all([dbname, options, user, password, host, port]):
+    raise ValueError("One or more environment variables are not set. Please check your .env file.")
+
+# Define the function to query the database and return a DataFrame  
+def query_to_df(sql_query, database, user, password, host, port, options):
     """
     function to execute a SQL query and return the result as a pandas DataFrame.
     
@@ -16,14 +33,18 @@ def query_to_df(sql_query, database):
     output:
     returns a pandas DataFrame containing the result of the SQL query.
     """
-    connection = psycopg2.connect(
-        dbname = "gel_clinical_cb_sql_pro",
-        options = f"-c search_path=source_data_100kv16_covidv4",
-        host = "clinical-cb-sql-pro.cfe5cdx3wlef.eu-west-2.rds.amazonaws.com",
-        port = 5432,
-        password = 'anXReTz36Q5r',
-        user = 'jupyter_notebook'
-    )
+    # connection = psycopg2.connect(
+    #     dbname = "gel_clinical_cb_sql_pro",
+    #     options = f"-c search_path=source_data_100kv16_covidv4",
+    #     host = "clinical-cb-sql-pro.cfe5cdx3wlef.eu-west-2.rds.amazonaws.com",
+    #     port = 5432,
+    #     password = 'anXReTz36Q5r',
+    #     user = 'jupyter_notebook'
+    # )
+    engine = create_engine(
+        f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}",
+        connect_args={"{options}": f"-c search_path={database}"})
+
     return(pd.read_sql_query(sql_query, connection))
 
 def query(participant_id: int):
