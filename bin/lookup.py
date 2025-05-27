@@ -33,10 +33,11 @@ def query(participant_id: int):
         ''')
 
     hes_query = query_to_df(hes_sql, version)
+    hes_query.to_csv("output.tsv", sep="\t", index=False)
 
-    out = open("output.txt", "w") 
-    out.write(hes_query) 
-    out.close()
+    # out = open("output.txt", "w") 
+    # out.write(hes_query) 
+    # out.close()
 
 if __name__ == "__main__":
     query()
