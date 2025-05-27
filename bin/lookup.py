@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 import click
-import psycopg2
+# import psycopg2
 import pandas as pd
 import numpy as np
+from sqlalchemy import create_engine
 
+# Database connection parameters (some of these need to be removed for security later)
+# todo: have these in a config or dotenv file
+dbname = "gel_clinical_cb_sql_pro"
+options = "-c search_path=source_data_100kv16_covidv4"
+host = "clinical-cb-sql-pro.cfe5cdx3wlef.eu-west-2.rds.amazonaws.com"
+port = 5432
+password = 'anXReTz36Q5r'
+user = 'jupyter_notebook'
 
-def query_to_df(sql_query, database):
+def query_to_df(sql_query, database, user, password, host, port, options):
     """
     function to execute a SQL query and return the result as a pandas DataFrame.
     
@@ -16,14 +25,18 @@ def query_to_df(sql_query, database):
     output:
     returns a pandas DataFrame containing the result of the SQL query.
     """
-    connection = psycopg2.connect(
-        dbname = "gel_clinical_cb_sql_pro",
-        options = f"-c search_path=source_data_100kv16_covidv4",
-        host = "clinical-cb-sql-pro.cfe5cdx3wlef.eu-west-2.rds.amazonaws.com",
-        port = 5432,
-        password = 'anXReTz36Q5r',
-        user = 'jupyter_notebook'
-    )
+    # connection = psycopg2.connect(
+    #     dbname = "gel_clinical_cb_sql_pro",
+    #     options = f"-c search_path=source_data_100kv16_covidv4",
+    #     host = "clinical-cb-sql-pro.cfe5cdx3wlef.eu-west-2.rds.amazonaws.com",
+    #     port = 5432,
+    #     password = 'anXReTz36Q5r',
+    #     user = 'jupyter_notebook'
+    # )
+    engine = create_engine(
+        f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}",
+        connect_args={"{options}": f"-c search_path={database}"})
+
     return(pd.read_sql_query(sql_query, connection))
 
 def query(participant_id: int):
