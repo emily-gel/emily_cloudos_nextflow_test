@@ -21,7 +21,7 @@ def query(participant_id: int):
         port = 5432
         password = 'anXReTz36Q5r'
         user = 'jupyter_notebook'
-        engine = create_engine(f'''postgressql://{user}:{password}@{host}:{port}/{database}''')
+        engine = create_engine(f'''postgresql://{user}:{password}@{host}:{port}/{database}''')
 
         @event.listens_for(engine, "connect", insert=True)
         def set_search_path(dbapi_connection, connection_record):
