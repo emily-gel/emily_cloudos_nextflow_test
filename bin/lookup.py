@@ -24,13 +24,13 @@ def query(participant_id: int):
         engine = create_engine(f'''postgressql://{user}:{password}@{host}:{port}/{database}''')
 
         @event.listens_for(engine, "connect", insert=True)
-            def set_search_path(dbapi_connection, connection_record):
-                existing_autocommit = dbapi_connection.autocommit
-                dbapi_connection.autocommit = True
-                cursor = dbapi_connection.cursor()
-                cursor.execute(f"SET SESSION search_path={version}")
-                cursor.close()
-                dbapi_connection.autocommit = existing_autocommit
+        def set_search_path(dbapi_connection, connection_record):
+            existing_autocommit = dbapi_connection.autocommit
+            dbapi_connection.autocommit = True
+            cursor = dbapi_connection.cursor()
+            cursor.execute(f"SET SESSION search_path={version}")
+            cursor.close()
+            dbapi_connection.autocommit = existing_autocommit
         
         with engine.connect as connection:
             result = connection.execute(text(sql_query))
