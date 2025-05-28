@@ -16,7 +16,7 @@ def query(participant_id: int):
     version = "source_data_100kv16_covidv4"
     
     def query_to_df(sql_query, version):
-        dbname = "gel_clinical_cb_sql_pro"
+        database = "gel_clinical_cb_sql_pro"
         host = "clinical-cb-sql-pro.cfe5cdx3wlef.eu-west-2.rds.amazonaws.com"
         port = 5432
         password = 'anXReTz36Q5r'
