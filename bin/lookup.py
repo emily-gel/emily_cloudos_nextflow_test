@@ -32,7 +32,7 @@ def query(participant_id: int):
             cursor.close()
             dbapi_connection.autocommit = existing_autocommit
         
-        with engine.connect as connection():
+        with engine.connect() as connection:
             result = connection.execute(text(sql_query))
             return(pd.DataFrame(result))
     
