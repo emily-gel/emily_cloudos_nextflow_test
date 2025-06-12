@@ -563,6 +563,7 @@ def query(participant_id: int):
         # out.write(f"<img src={participant_id}_graph.png>")
         out.write("</body>")
         out.close()
+    html(participant_id)
 
 if __name__ == "__main__":
     query()
