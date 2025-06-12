@@ -3,6 +3,7 @@ import click
 from sqlalchemy import create_engine, event, text
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 @click.command()
 @click.option(
@@ -502,10 +503,26 @@ def query(participant_id: int):
                 return(cancer_table)
     
         def all_clinical_table (participant_id):   
-        table = pd.concat([diagnoses(participant_id), investigations(participant_id), treatments(participant_id), recruited(participant_id), cancer(participant_id), hpo(participant_id)])
-        table['date'] = pd.to_datetime(table['date'])
-        table = table.sort_values(by=['date'])
-        return(table)
+            table = pd.concat([diagnoses(participant_id), investigations(participant_id), treatments(participant_id), recruited(participant_id), cancer(participant_id), hpo(participant_id)])
+            table['date'] = pd.to_datetime(table['date'])
+            table = table.sort_values(by=['date'])
+            return(table)
+
+        def clinical_graph(participant_id):
+            input = all_clinical_table(participant_id).dropna()
+            height = len(pd.unique(input['event']))/5
+            input['event_trunc'] = input['event'].apply(lambda x: x[:20])
+            
+            plt.plot_date(input['date'], input['event_trunc'], xdate=True, ydate=False)
+            plt.xticks(rotation=70)
+            plt.figure(figsize=(10,height))
+            groups = input.groupby('source')
+            for name, group in groups:
+                plt.plot(group.date, group.event_trunc, marker='o', linestyle='', markersize=3, label=name)
+            plt.legend()
+            plt.xlabel('Date of event')
+            plt.ylabel('Event')
+            plt.savefig(f'{participant_id}_graph.png', bbox_inches='tight')
     
         def html (participant_id):
             out = open(f"{participant_id}_output.html", "x")
@@ -542,8 +559,8 @@ def query(participant_id: int):
             out.write(genomic(participant_id))    
             out.write("<h1>Clinical data</h1>")
             out.write(all_clinical_table(participant_id).to_html()) 
-            # clinical_graph(participant_id)
-            # out.write(f"<img src={participant_id}_graph.png>")
+            clinical_graph(participant_id)
+            out.write(f"<img src={participant_id}_graph.png>")
             out.write("</body>")
             out.close()
 
