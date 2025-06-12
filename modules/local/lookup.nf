@@ -7,7 +7,7 @@ process LOOKUP {
     val id
 
     output:
-    path "${id}_output.tsv"
+    path "${id}_output.html"
 
     script: 
     """
