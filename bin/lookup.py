@@ -46,7 +46,7 @@ def query(participant_id: int):
     html = hes_query.to_html()
     # hes_query.to_csv(f"{participant_id}_output.tsv", sep="\t", index=False)
 
-    out = open("output.html", "w") 
+    out = open("{participant_id}_output.html", "w") 
     out.write(html) 
     out.close()
 
