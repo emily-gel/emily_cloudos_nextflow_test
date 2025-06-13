@@ -216,7 +216,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             ae_con_df = pd.read_csv(ae_con,sep = '\t')
             ae_ana_df = pd.read_csv(ae_ana,sep = '\t')
             ae_side_df = pd.read_csv(ae_side,sep = '\t')
-            ae_side_df = ae_side.astype({'side_code': object})
+            ae_side_df = ae_side_df.astype({'side_code': object})
             ae_query = ae_query.astype({'diags_all': object})
             ae_query[['diag2_all', 'diaga_all']] = ae_query[['diag2_all', 'diaga_all']].apply(pd.to_numeric)
             ae_query = pd.merge(ae_query, ae_con_df, how = "left", left_on='diag2_all', right_on = 'con_code')
