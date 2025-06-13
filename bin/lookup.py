@@ -7,14 +7,14 @@ import numpy as np
 
 @click.command()
 @click.option( "--participant_id", type=int, required=True)
-@click.option( "--ae_ana")
-@click.option( "--ae_con")
-@click.option( "--ae_inv")
-@click.option( "--ae_side")
-@click.option( "--ae_tre")
-@click.option( "--icd10")
-@click.option( "--opcs")
-@click.option( "--snomed")
+@click.option( "--ae_ana", type=click.Path(exists=True))
+@click.option( "--ae_con", type=click.Path(exists=True))
+@click.option( "--ae_inv", type=click.Path(exists=True))
+@click.option( "--ae_side", type=click.Path(exists=True))
+@click.option( "--ae_tre", type=click.Path(exists=True))
+@click.option( "--icd10", type=click.Path(exists=True))
+@click.option( "--opcs", type=click.Path(exists=True))
+@click.option( "--snomed", type=click.Path(exists=True))
 
 def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, snomed):
     print (ae_con)
