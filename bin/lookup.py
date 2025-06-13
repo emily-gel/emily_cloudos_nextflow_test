@@ -17,7 +17,7 @@ import numpy as np
 @click.option( "--snomed")
 
 def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, snomed):
-    print (ae_ana)
+    print (ae_con)
 
     version = "source_data_100kv16_covidv4"
     
