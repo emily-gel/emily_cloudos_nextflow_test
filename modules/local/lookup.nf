@@ -4,7 +4,15 @@ process LOOKUP {
     publishDir path: "results"
 
     input: 
-    tuple val(id), path(ae_ana), path(ae_con), path(ae_inv), path(ae_side), path(ae_tre), path(icd10), path(opcs), path(snomed)
+    val id
+    path ae_ana
+    path ae_con
+    path ae_inv
+    path ae_side
+    path ae_tre
+    path icd10
+    path opcs
+    path snomed
 
     output:
     path "${id}_output.html"
