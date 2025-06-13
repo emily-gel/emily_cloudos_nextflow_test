@@ -5,7 +5,7 @@ process LOOKUP {
 
     input: 
     tuple \
-    val id
+        val id
         path "ae_anatomical.tsv"
         path "ae_condition.tsv"
         path "ae_invest.tsv"
