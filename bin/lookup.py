@@ -6,17 +6,18 @@ import numpy as np
 # import matplotlib.pyplot as plt
 
 @click.command()
-@click.option( "--participant_id", type=int, required=True,)
-@click.option( "--ae_ana", required=True,)
-@click.option( "--ae_con", required=True,)
-@click.option( "--ae_inv", required=True,)
-@click.option( "--ae_side", required=True,)
-@click.option( "--ae_tre", required=True,)
-@click.option( "--icd10", required=True,)
-@click.option( "--opcs", required=True,)
-@click.option( "--snomed", required=True,)
+@click.option( "--participant_id", type=int, required=True)
+@click.option( "--ae_ana")
+@click.option( "--ae_con")
+@click.option( "--ae_inv")
+@click.option( "--ae_side")
+@click.option( "--ae_tre")
+@click.option( "--icd10")
+@click.option( "--opcs")
+@click.option( "--snomed")
 
 def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, snomed):
+    print (ae_ana)
 
     version = "source_data_100kv16_covidv4"
     
