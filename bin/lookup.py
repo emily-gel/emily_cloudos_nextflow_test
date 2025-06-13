@@ -213,15 +213,15 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
         ae_query = query_to_df(ae_sql, version)
         if not ae_query.empty:
             ae_query = diag_ae_separate(ae_query)
-            ae_con = pd.read_csv(ae_con,sep = '\t')
-            ae_ana = pd.read_csv(ae_ana,sep = '\t')
-            ae_side = pd.read_csv(ae_side,sep = '\t')
-            ae_side = ae_side.astype({'side_code': object})
+            ae_con_df = pd.read_csv(ae_con,sep = '\t')
+            ae_ana_df = pd.read_csv(ae_ana,sep = '\t')
+            ae_side_df = pd.read_csv(ae_side,sep = '\t')
+            ae_side_df = ae_side.astype({'side_code': object})
             ae_query = ae_query.astype({'diags_all': object})
             ae_query[['diag2_all', 'diaga_all']] = ae_query[['diag2_all', 'diaga_all']].apply(pd.to_numeric)
-            ae_query = pd.merge(ae_query, ae_con, how = "left", left_on='diag2_all', right_on = 'con_code')
-            ae_query = pd.merge(ae_query, ae_ana, how = "left", left_on='diaga_all', right_on = 'ana_code')
-            ae_query = pd.merge(ae_query, ae_side, how = "left", left_on='diags_all', right_on = 'side_code')
+            ae_query = pd.merge(ae_query, ae_con_df, how = "left", left_on='diag2_all', right_on = 'con_code')
+            ae_query = pd.merge(ae_query, ae_ana_df, how = "left", left_on='diaga_all', right_on = 'ana_code')
+            ae_query = pd.merge(ae_query, ae_side_df, how = "left", left_on='diags_all', right_on = 'side_code')
             ae_query['meaning'] = ae_query['con_meaning'].fillna('') + ', ' + ae_query['ana_meaning'].fillna('') + ', ' + ae_query['side_meaning'].fillna('')
             ae_query = ae_query[['participant_id', 'date', 'diag_all', 'meaning']]
             ae_query['source'] = 'Accident and Emergency: A&E diagnosis code'
