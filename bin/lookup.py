@@ -6,11 +6,15 @@ import numpy as np
 # import matplotlib.pyplot as plt
 
 @click.command()
-@click.option(
-    "--participant_id",
-    type=int,
-    required=True,
-)
+@click.option( "--participant_id", type=int, required=True,)
+ae_ana = sys.argv[1]
+ae_con = sys.argv[2]
+ae_inv = sys.argv[3] 
+ae_side = sys.argv[4]
+ae_tre = sys.argv[5] 
+icd10 = sys.argv[6] 
+opcs = sys.argv[7]
+snomed = sys.argv[8]
 
 def query(participant_id: int):
 
@@ -208,9 +212,9 @@ def query(participant_id: int):
         ae_query = query_to_df(ae_sql, version)
         if not ae_query.empty:
             ae_query = diag_ae_separate(ae_query)
-            ae_con = pd.read_csv('ae_condition.tsv',sep = '\t')
-            ae_ana = pd.read_csv('ae_anatomical.tsv',sep = '\t')
-            ae_side = pd.read_csv('ae_side.tsv',sep = '\t')
+            ae_con = pd.read_csv(ae_con,sep = '\t')
+            ae_ana = pd.read_csv(ae_ana,sep = '\t')
+            ae_side = pd.read_csv(ae_side,sep = '\t')
             ae_side = ae_side.astype({'side_code': object})
             ae_query = ae_query.astype({'diags_all': object})
             ae_query[['diag2_all', 'diaga_all']] = ae_query[['diag2_all', 'diaga_all']].apply(pd.to_numeric)
@@ -229,7 +233,7 @@ def query(participant_id: int):
             ''')
         apc_query = query_to_df(apc_sql, version)
         if not apc_query.empty:
-            apc_query = column_separate(apc_query, 'diag_all', 'icd10.tsv')
+            apc_query = column_separate(apc_query, 'diag_all', icd10)
             apc_query['source'] = 'Admitted patient care: ICD10 code'
             diag_table = pd.concat([diag_table, apc_query])
         
@@ -240,7 +244,7 @@ def query(participant_id: int):
             ''')
         op_query = query_to_df(op_sql, version)
         if not op_query.empty:
-            op_query = column_separate(op_query, 'diag_all', 'icd10.tsv')
+            op_query = column_separate(op_query, 'diag_all', icd10)
             op_query['source'] = 'Outpatients: ICD10 code'
             diag_table = pd.concat([diag_table, op_query])
         
@@ -251,7 +255,7 @@ def query(participant_id: int):
             ''')
         ecds_query = query_to_df(ecds_sql, version)
         if not ecds_query.empty:
-            ecds_query = column_separate(ecds_query, 'diag_all', 'snomed.tsv')
+            ecds_query = column_separate(ecds_query, 'diag_all', snomed)
             ecds_query['source'] = 'Emergency care dataset: SNOMED CT'
             diag_table = pd.concat([diag_table, ecds_query])
         
@@ -270,7 +274,7 @@ def query(participant_id: int):
             ''')
         ae_invest_query = query_to_df(ae_invest_sql, version)
         if not ae_invest_query.empty:
-            ae_invest_query = column_separate(ae_invest_query, 'invest_all', 'ae_invest.tsv')
+            ae_invest_query = column_separate(ae_invest_query, 'invest_all', ae_inv)
             ae_invest_query['source'] = 'Accident and Emergency: A&E investigation code'
             invest_table = pd.concat([ae_invest_query, invest_table])
         
@@ -281,7 +285,7 @@ def query(participant_id: int):
             ''')
         did_invest_query = query_to_df(did_invest_sql, version)
         if not did_invest_query.empty:
-            did_invest_query = column_separate(did_invest_query, 'invest_all', 'snomed.tsv')
+            did_invest_query = column_separate(did_invest_query, 'invest_all', snomed)
             did_invest_query['source'] = 'Diagnostic imaging data: SNOMED CT code'
             invest_table = pd.concat([did_invest_query, invest_table])
         
@@ -292,7 +296,7 @@ def query(participant_id: int):
             ''')
         ecds_invest_query = query_to_df(ecds_invest_sql, version)
         if not ecds_invest_query.empty:
-            ecds_invest_query = column_separate(ecds_invest_query, 'invest_all', 'snomed.tsv')
+            ecds_invest_query = column_separate(ecds_invest_query, 'invest_all', snomed)
             ecds_invest_query['source'] = 'Emergency care dataset: SNOMED CT code'
             invest_table = pd.concat([ecds_invest_query, invest_table])
     
@@ -311,7 +315,7 @@ def query(participant_id: int):
             ''')
         ae_treat_query = query_to_df(ae_treat_sql, version)
         if not ae_treat_query.empty:
-            ae_treat_query = column_separate(ae_treat_query, 'treat_all', 'ae_treat.tsv')
+            ae_treat_query = column_separate(ae_treat_query, 'treat_all', ae_tre)
             ae_treat_query = ae_treat_query[['participant_id', 'date', 'treat_all', 'meaning']]
             ae_treat_query['source'] = 'Accident and Emergency: A&E treatment code'
             treat_table = pd.concat([ae_treat_query, treat_table])
@@ -323,7 +327,7 @@ def query(participant_id: int):
             ''')
         apc_treat_query = query_to_df(apc_treat_sql, version)
         if not apc_treat_query.empty:
-            apc_treat_query = column_separate(apc_treat_query, 'treat_all', 'opcs.tsv')
+            apc_treat_query = column_separate(apc_treat_query, 'treat_all', opcs)
             apc_treat_query['source'] = 'Admitted Patient Care: OPCS4'
             treat_table = pd.concat([apc_treat_query, treat_table])
         
@@ -334,7 +338,7 @@ def query(participant_id: int):
             ''')
         op_treat_query = query_to_df(op_treat_sql, version)
         if not op_treat_query.empty:
-            op_treat_query = column_separate(op_treat_query, 'treat_all', 'opcs.tsv')
+            op_treat_query = column_separate(op_treat_query, 'treat_all', opcs)
             op_treat_query['source'] = 'Outpatients: OPCS4'
             treat_table = pd.concat([op_treat_query, treat_table])
         
@@ -345,7 +349,7 @@ def query(participant_id: int):
             ''')
         ecds_treat_query = query_to_df(ecds_treat_sql, version)
         if not ecds_treat_query.empty:
-            ecds_treat_query = column_separate(ecds_treat_query, 'treat_all', 'snomed.tsv')
+            ecds_treat_query = column_separate(ecds_treat_query, 'treat_all', snomed)
             ecds_treat_query['source'] = 'Emergency care dataset: SNOMED CT'
             treat_table = pd.concat([ecds_treat_query, treat_table])
     
@@ -483,7 +487,7 @@ def query(participant_id: int):
                 ''')
             rtds_query = query_to_df(rtds_sql, version)
             if not rtds_query.empty:
-                convert = pd.read_csv("opcs.tsv",sep = '\t', dtype=str)
+                convert = pd.read_csv(opcs ,sep = '\t', dtype=str)
                 rtds_query = pd.merge(rtds_query, convert, how = "left", left_on='primaryprocedureopcs', right_on = 'coding')
                 intent = pd.DataFrame(
                     {'intent_code': [1, 2, 3],
