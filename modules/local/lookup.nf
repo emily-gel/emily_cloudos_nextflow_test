@@ -11,6 +11,6 @@ process LOOKUP {
 
     script: 
     """
-    lookup.py --participant_id ${id} ${ae_ana} ${ae_con} ${ae_inv} ${ae_side} ${ae_tre} ${icd10} ${opcs} ${snomed}
+    lookup.py --participant_id ${id} --ae_ana ${ae_ana} --ae_con ${ae_con} --ae_inv ${ae_inv} --ae_side ${ae_side} --ae_tre ${ae_tre} --icd10 ${icd10} --opcs ${opcs} --snomed ${snomed}
     """
 }
