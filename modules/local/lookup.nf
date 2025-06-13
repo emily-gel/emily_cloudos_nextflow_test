@@ -8,7 +8,8 @@ process LOOKUP {
         val id,
         path ae_ana, 
         path ae_con, 
-        path ae_inv, 
+        path ae_inv,
+        path ae_side,
         path ae_tre, 
         path icd10, 
         path opcs, 
@@ -19,6 +20,6 @@ process LOOKUP {
 
     script: 
     """
-    lookup.py --participant_id ${id} ae_ana ae_con ae_inv ae_tre icd10 opcs snomed
+    lookup.py --participant_id ${id} ae_ana ae_con ae_inv ae_side ae_tre icd10 opcs snomed
     """
 }
