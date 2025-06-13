@@ -5,14 +5,14 @@ process LOOKUP {
 
     input: 
     tuple \
-        val id
-        path "ae_anatomical.tsv"
-        path "ae_condition.tsv"
-        path "ae_invest.tsv"
-        path "ae_side.tsv"
-        path "ae_treat.tsv"
-        path "icd10.tsv"
-        path "opcs.tsv"
+        val id,
+        path "ae_anatomical.tsv",
+        path "ae_condition.tsv",
+        path "ae_invest.tsv",
+        path "ae_side.tsv",
+        path "ae_treat.tsv",
+        path "icd10.tsv",
+        path "opcs.tsv",
         path "snomed.tsv"
 
     output:
