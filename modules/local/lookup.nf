@@ -19,6 +19,6 @@ process LOOKUP {
 
     script: 
     """
-    lookup.py --participant_id ${id}
+    lookup.py --participant_id ${id} ae_ana ae_con ae_inv ae_tre icd10 opcs snomed
     """
 }
