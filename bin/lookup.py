@@ -6,7 +6,8 @@ import numpy as np
 # import matplotlib.pyplot as plt
 
 @click.command()
-@click.option( "--ae_ana", type=int, required=True,)
+@click.option( "--participant_id", type=int, required=True,)
+@click.option( "--ae_ana", required=True,)
 @click.option( "--ae_con", required=True,)
 @click.option( "--ae_inv", required=True,)
 @click.option( "--ae_side", required=True,)
