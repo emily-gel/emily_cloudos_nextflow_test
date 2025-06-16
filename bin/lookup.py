@@ -62,7 +62,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             ''')
         about_query = query_to_df(about_sql, version)
         return (f'''
-            <h1>About</h1>
+            <h2>About</h2>
             <table>
             <tr><td>Participant ID</td><td>{participant_id}</td></tr>
             <tr><td>Year of birth</td><td>{about_query.loc[0, 'yob']}</td></tr>
@@ -101,7 +101,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             ''')
             proband_query = query_to_df(proband_sql, version)
             html = family_processing(proband_query, participant_id).to_html(index=False, show_dimensions=True)
-            html= html.replace('<tbody>', '<tbody id="myTable">')
+            html = html.replace('<tbody>', '<tbody id="myTable">')
             return html
         elif (type == 'rd_relative'):
             relative_sql = (f''' SELECT
@@ -127,7 +127,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             ''')
             relative_query= query_to_df(relative_sql, version)
             html = family_processing(relative_query, participant_id).to_html(index=False, show_dimensions=True)
-            html= html.replace('<tbody>', '<tbody id="myTable">')
+            html = html.replace('<tbody>', '<tbody id="myTable">')
             return html
         elif (type == 'cancer_participant'):
             return ("<p>No family data for cancer participants</p>")
@@ -182,7 +182,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
                 genomic_df = pd.concat([genomic_df, new_can], ignore_index=True)
             
         html = genomic_df.to_html(index=False, show_dimensions=True)
-        html= html.replace('<tbody>', '<tbody id="myTable">')
+        html = html.replace('<tbody>', '<tbody id="myTable">')
         return html
 
     def column_separate(table, column, convert_table):
@@ -802,7 +802,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             })
             }
             }, null);
-            </script></body>''')
+            </script></body></html>''')
         out.close()
     html(participant_id)
 
