@@ -592,7 +592,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             <div class="container">
             <div class="row">
             <div class="table-responsive">
-            <table class="table table-hover">''')
+       ''')
         out.write(family(participant_id))
         out.write('''</div></div></div><div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="myPager"></ul></div>''')
@@ -600,7 +600,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             <div class="container">
             <div class="row">
             <div class="table-responsive">
-            <table class="table table-hover">''')
+       ''')
         out.write(genomic(participant_id))  
         out.write('''</div></div></div><div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="myPager"></ul></div>''')
@@ -608,7 +608,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             <div class="container">
             <div class="row">
             <div class="table-responsive">
-            <table class="table table-hover">''')
+       ''')
         clinical_html = all_clinical_table(participant_id).to_html(index=False, show_dimensions=True)
         clinical_html = clinical_html.replace('<tbody>', '<tbody id="myTable">')
         out.write(clinical_html)
