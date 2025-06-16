@@ -574,7 +574,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             cursor: default;
             background-color: #df007d;
             border-color: #df007d;
-                
+        }
             
         .pagination>li>a, .pagination>li>span {
             position: relative;
@@ -582,9 +582,15 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             margin-left: -1px;
             color: #df007d;
             text-decoration: none;
+
+        }
             </style>
             </head>
-            <body>'''
+            <body>
+            <div class="container">
+            <div class="row">
+            <div class="table-responsive">
+            <table class="table table-hover">'''
         out.write(css)
         out.write(f"<h1>Participant: {participant_id}</h1>")
         out.write(about(participant_id))
