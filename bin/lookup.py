@@ -562,28 +562,26 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
               background-color: #df007d;
               color: white;
             }
-      .pager li>a, .pager li>span {
+            .pager li>a, .pager li>span {
             display: inline-block;
             padding: 5px 14px;
             border: 1px solid #df007d;
             border-radius: 15px;
-        }
-        .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+            }
+            .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
             z-index: 3;
             color: #fff;
             cursor: default;
             background-color: #df007d;
             border-color: #df007d;
-        }
-            
-        .pagination>li>a, .pagination>li>span {
+            }                
+            .pagination>li>a, .pagination>li>span {
             position: relative;
             float: left;
             margin-left: -1px;
             color: #df007d;
             text-decoration: none;
-
-        }
+            }
             </style>
             </head>
             <body>
@@ -597,17 +595,17 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
         out.write("<h2>Family</h2>")
         out.write(family(participant_id))
         out.write('''<div class="col-md-12 text-center">
-            <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
+            <ul class="pagination pagination-lg pager" id="myPager"></ul></div>''')
         out.write("<h2>Genomics data</h2>")
         out.write(genomic(participant_id))  
         out.write('''<div class="col-md-12 text-center">
-            <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
+            <ul class="pagination pagination-lg pager" id="myPager"></ul></div>''')
         out.write("<h2>Clinical data</h2>")
         clinical_html = all_clinical_table(participant_id).to_html(index=False, show_dimensions=True)
         clinical_html = clinical_html.replace('<tbody>', '<tbody id="myTable">')
         out.write(clinical_html)
         out.write('''<div class="col-md-12 text-center">
-            <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
+            <ul class="pagination pagination-lg pager" id="myPager"></ul></div>''')
         # clinical_graph(participant_id)
         # out.write(f"<img src={participant_id}_graph.png>")
         out.write('''<!--JAVASCRIPT-->
