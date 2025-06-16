@@ -560,16 +560,17 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             </head>
             <body>'''
         out.write(css)
+        out.write(f"<h1>Participant: {participant_id}</h1>")
         out.write(about(participant_id))
-        out.write("<h1>Family</h1>")
+        out.write("<h2>Family</h2>")
         out.write(family(participant_id))
         out.write('''<div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
-        out.write("<h1>Genomics data</h1>")
+        out.write("<h2>Genomics data</h2>")
         out.write(genomic(participant_id))  
         out.write('''<div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
-        out.write("<h1>Clinical data</h1>")
+        out.write("<h2>Clinical data</h2>")
         out.write(all_clinical_table(participant_id).to_html(index=False, show_dimensions=True)) 
         out.write('''<div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
