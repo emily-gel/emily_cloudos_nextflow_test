@@ -556,6 +556,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
               background-color: #df007d;
               color: white;
             }
+             .table-responsive {height:500px;}
             </style>
             </head>
             <body>'''
