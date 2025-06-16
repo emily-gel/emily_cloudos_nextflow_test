@@ -100,7 +100,9 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
                 AND f.rare_diseases_family_sk = pm.rare_diseases_family_sk
             ''')
             proband_query = query_to_df(proband_sql, version)
-            return family_processing(proband_query, participant_id).to_html(index=False, show_dimensions=True)
+            html = family_processing(proband_query, participant_id).to_html(index=False, show_dimensions=True)
+            html= html.replace('<tbody>', '<tbody id="myTable">')
+            return html
         elif (type == 'rd_relative'):
             relative_sql = (f''' SELECT
                     pm.participant_id,
@@ -124,7 +126,9 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
                 AND f.rare_diseases_family_sk = pm.rare_diseases_family_sk
             ''')
             relative_query= query_to_df(relative_sql, version)
-            return family_processing(relative_query, participant_id).to_html(index=False, show_dimensions=True)
+            html = family_processing(relative_query, participant_id).to_html(index=False, show_dimensions=True)
+            html= html.replace('<tbody>', '<tbody id="myTable">')
+            return html
         elif (type == 'cancer_participant'):
             return ("<p>No family data for cancer participants</p>")
     
@@ -177,7 +181,9 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
                 new_can['source'] = 'Cancer realigned on dragen2'
                 genomic_df = pd.concat([genomic_df, new_can], ignore_index=True)
             
-        return genomic_df.to_html(index=False, show_dimensions=True)
+        html = genomic_df.to_html(index=False, show_dimensions=True)
+        html= html.replace('<tbody>', '<tbody id="myTable">')
+        return html
 
     def column_separate(table, column, convert_table):
         table[column] = table[column].str.split("|")
@@ -556,7 +562,26 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
               background-color: #df007d;
               color: white;
             }
-             .table-responsive {height:500px;}
+      .pager li>a, .pager li>span {
+            display: inline-block;
+            padding: 5px 14px;
+            border: 1px solid #df007d;
+            border-radius: 15px;
+        }
+        .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+            z-index: 3;
+            color: #fff;
+            cursor: default;
+            background-color: #df007d;
+            border-color: #df007d;
+                
+            
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            margin-left: -1px;
+            color: #df007d;
+            text-decoration: none;
             </style>
             </head>
             <body>'''
@@ -572,7 +597,9 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
         out.write('''<div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
         out.write("<h2>Clinical data</h2>")
-        out.write(all_clinical_table(participant_id).to_html(index=False, show_dimensions=True)) 
+        clinical_html = all_clinical_table(participant_id).to_html(index=False, show_dimensions=True)
+        clinical_html = clinical_html.replace('<tbody>', '<tbody id="myTable">')
+        out.write(clinical_html)
         out.write('''<div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
         # clinical_graph(participant_id)
