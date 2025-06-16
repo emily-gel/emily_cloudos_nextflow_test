@@ -533,6 +533,9 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
         out = open(f"{participant_id}_output.html", "x")
         css = '''<html>
             <head>
+            <!--BOOTSTRAP PLUGIN-->
+            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">  
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
             <style>
             body { font-family: Avenir, sans-serif; }
             td, th {
@@ -560,13 +563,217 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
         out.write(about(participant_id))
         out.write("<h1>Family</h1>")
         out.write(family(participant_id))
+        out.write('''<div class="col-md-12 text-center">
+            <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
         out.write("<h1>Genomics data</h1>")
-        out.write(genomic(participant_id))    
+        out.write(genomic(participant_id))  
+        out.write('''<div class="col-md-12 text-center">
+            <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
         out.write("<h1>Clinical data</h1>")
         out.write(all_clinical_table(participant_id).to_html()) 
+        out.write('''<div class="col-md-12 text-center">
+            <ul class="pagination pagination-lg pager" id="myPager"></ul>''')
         # clinical_graph(participant_id)
         # out.write(f"<img src={participant_id}_graph.png>")
-        out.write("</body>")
+        out.write('''<!--JAVASCRIPT-->
+            <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+            <script>
+            $.fn.pageMe = function(opts){
+            var $this = this,
+            defaults = {
+            perPage: 20,
+            showPrevNext: false,
+            hidePageNumbers: false
+            },
+            settings = $.extend(defaults, opts);
+            
+            var listElement = $this;
+            var perPage = settings.perPage; 
+            var children = listElement.children();
+            var pager = $('.pager');
+            
+            if (typeof settings.childSelector!="undefined") {
+            children = listElement.find(settings.childSelector);
+            }
+            
+            if (typeof settings.pagerSelector!="undefined") {
+            pager = $(settings.pagerSelector);
+            }
+            
+            var numItems = children.size();
+            var numPages = Math.ceil(numItems/perPage);
+            
+            pager.data("curr",0);
+            
+            if (settings.showPrevNext){
+            $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
+            }
+            
+            var curr = 0;
+            while(numPages > curr && (settings.hidePageNumbers==false)){
+            $('<li><a href="#" class="page_link">'+(curr+1)+'</a></li>').appendTo(pager);
+            curr++;
+            }
+            
+            if (settings.showPrevNext){
+            $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
+            }
+            
+            pager.find('.page_link:first').addClass('active');
+            pager.find('.prev_link').hide();
+            if (numPages<=1) {
+            pager.find('.next_link').hide();
+            }
+            pager.children().eq(1).addClass("active");
+            
+            children.hide();
+            children.slice(0, perPage).show();
+            
+            pager.find('li .page_link').click(function(){
+            var clickedPage = $(this).html().valueOf()-1;
+            goTo(clickedPage,perPage);
+            return false;
+            });
+            pager.find('li .prev_link').click(function(){
+            previous();
+            return false;
+            });
+            pager.find('li .next_link').click(function(){
+            next();
+            return false;
+            });
+            
+            function previous(){
+            var goToPage = parseInt(pager.data("curr")) - 1;
+            goTo(goToPage);
+            }
+            
+            function next(){
+            goToPage = parseInt(pager.data("curr")) + 1;
+            goTo(goToPage);
+            }
+            
+            function goTo(page){
+            var startAt = page * perPage,
+            endOn = startAt + perPage;
+            
+            children.css('display','none').slice(startAt, endOn).show();
+            
+            if (page>=1) {
+            pager.find('.prev_link').show();
+            }
+            else {
+            pager.find('.prev_link').hide();
+            }
+            
+            if (page<(numPages-1)) {
+            pager.find('.next_link').show();
+            }
+            else {
+            pager.find('.next_link').hide();
+            }
+            
+            pager.data("curr",page);
+            pager.children().removeClass("active");
+            pager.children().eq(page+1).addClass("active");
+            
+            }
+            };
+            
+            $(document).ready(function(){
+            
+            $('#myTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:4});
+            
+            });
+            </script>
+            <script>
+            // prevent navigation
+            document.addEventListener("DOMContentLoaded", function() {
+            var links = document.getElementsByTagName("A");
+            for(var i=0; i < links.length; i++) {
+            links[i].addEventListener("click", function(e) {
+            var href = this.getAttribute("href")
+            
+            if (!href) {
+            return
+            }
+            
+            if (href === '#') {
+            // hash only ('#')
+            console.debug('Internal nav allowed by Codeply');
+            e.preventDefault()
+            }
+            else if (this.hash) {
+            // hash with tag ('#foo')
+            var element = null
+            try {
+            element = document.querySelector(this.hash)
+            }
+            catch(e) {
+            console.debug('Codeply internal nav querySelector failed')
+            }
+            if (element) {
+            // scroll to anchor
+            e.preventDefault();
+            const top = element.getBoundingClientRect().top + window.pageYOffset
+            //window.scrollTo({top, behavior: 'smooth'})
+            window.scrollTo(0,top)
+            console.debug('Internal anchor controlled by Codeply to element:' + this.hash)
+            }
+            else {
+            // allow javascript routing
+            console.debug('Internal nav route allowed by Codeply');
+            }
+            }
+            else if (href.indexOf("/p/")===0 || href.indexOf("/v/")===0) {
+            // special multi-page routing
+            console.debug('Special internal page route: ' + href)
+            
+            var l = href.replace('/p/','/v/')
+            
+            // reroute
+            e.preventDefault()
+            var newLoc = l + '?from=internal'
+            console.debug('Internal view will reroute to ' + newLoc) 
+            location.href = newLoc
+            }
+            else if (href.indexOf("./")===0) {
+            // special multi-page routing
+            console.debug('Special internal ./ route: ' + href)
+            
+            var u = parent.document.URL.split("/")
+            var pn = href.split("/")[1]
+            var plyId = u[u.length-1]
+            
+            if (plyId.indexOf('?from')>-1) {
+            // already rerouted this
+            console.debug('already rerouted')
+            plyId = u[u.length-2]
+            }
+            
+            var l = plyId + '/' + pn
+            
+            console.debug(u)
+            console.debug(pn)
+            console.debug('l',l)
+            
+            // reroute
+            e.preventDefault()
+            var newLoc = '/v/' + l + '?from=internal'
+            console.debug('Internal page will reroute to ' + newLoc) 
+            location.href = newLoc
+            }
+            else {
+            // no external links
+            e.preventDefault();
+            console.debug('External nav prevented by Codeply');
+            }
+            //return false;
+            })
+            }
+            }, null);
+            </script></body>''')
         out.close()
     html(participant_id)
 
