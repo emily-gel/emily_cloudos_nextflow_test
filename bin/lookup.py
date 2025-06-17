@@ -101,7 +101,6 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             ''')
             proband_query = query_to_df(proband_sql, version)
             html = family_processing(proband_query, participant_id).to_html(index=False, show_dimensions=True)
-            html = html.replace('<tbody>', '<tbody id="myTable">')
             return html
         elif (type == 'rd_relative'):
             relative_sql = (f''' SELECT
@@ -127,7 +126,6 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             ''')
             relative_query= query_to_df(relative_sql, version)
             html = family_processing(relative_query, participant_id).to_html(index=False, show_dimensions=True)
-            html = html.replace('<tbody>', '<tbody id="myTable">')
             return html
         elif (type == 'cancer_participant'):
             return ("<p>No family data for cancer participants</p>")
@@ -182,7 +180,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
                 genomic_df = pd.concat([genomic_df, new_can], ignore_index=True)
             
         html = genomic_df.to_html(index=False, show_dimensions=True)
-        html = html.replace('<tbody>', '<tbody id="myTable">')
+        html = html.replace('<tbody>', '<tbody id="genomicTable">')
         return html
 
     def column_separate(table, column, convert_table):
@@ -594,8 +592,6 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             <div class="table-responsive">
        ''')
         out.write(family(participant_id))
-        out.write('''</div></div></div><div class="col-md-12 text-center">
-            <ul class="pagination pagination-lg pager" id="myPager"></ul></div>''')
         out.write('''<h2>Genomics data</h2>
             <div class="container">
             <div class="row">
@@ -603,17 +599,17 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
        ''')
         out.write(genomic(participant_id))  
         out.write('''</div></div></div><div class="col-md-12 text-center">
-            <ul class="pagination pagination-lg pager" id="myPager"></ul></div>''')
+            <ul class="pagination pagination-lg pager" id="genomicPager"></ul></div>''')
         out.write('''<h2>Clinical data</h2>
             <div class="container">
             <div class="row">
             <div class="table-responsive">
        ''')
         clinical_html = all_clinical_table(participant_id).to_html(index=False, show_dimensions=True)
-        clinical_html = clinical_html.replace('<tbody>', '<tbody id="myTable">')
+        clinical_html = clinical_html.replace('<tbody>', '<tbody id="clinicalTable">')
         out.write(clinical_html)
         out.write('''</div></div></div><div class="col-md-12 text-center">
-            <ul class="pagination pagination-lg pager" id="myPager"></ul></div>''')
+            <ul class="pagination pagination-lg pager" id="clinicalPager"></ul></div>''')
         # clinical_graph(participant_id)
         # out.write(f"<img src={participant_id}_graph.png>")
         out.write('''<!--JAVASCRIPT-->
@@ -724,7 +720,202 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             
             $(document).ready(function(){
             
-            $('#myTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:4});
+            $('#clinicalTable').pageMe({pagerSelector:'#clinicalPager',showPrevNext:true,hidePageNumbers:false,perPage:4});
+            
+            });
+            </script>
+            <script>
+            // prevent navigation
+            document.addEventListener("DOMContentLoaded", function() {
+            var links = document.getElementsByTagName("A");
+            for(var i=0; i < links.length; i++) {
+            links[i].addEventListener("click", function(e) {
+            var href = this.getAttribute("href")
+            
+            if (!href) {
+            return
+            }
+            
+            if (href === '#') {
+            // hash only ('#')
+            console.debug('Internal nav allowed by Codeply');
+            e.preventDefault()
+            }
+            else if (this.hash) {
+            // hash with tag ('#foo')
+            var element = null
+            try {
+            element = document.querySelector(this.hash)
+            }
+            catch(e) {
+            console.debug('Codeply internal nav querySelector failed')
+            }
+            if (element) {
+            // scroll to anchor
+            e.preventDefault();
+            const top = element.getBoundingClientRect().top + window.pageYOffset
+            //window.scrollTo({top, behavior: 'smooth'})
+            window.scrollTo(0,top)
+            console.debug('Internal anchor controlled by Codeply to element:' + this.hash)
+            }
+            else {
+            // allow javascript routing
+            console.debug('Internal nav route allowed by Codeply');
+            }
+            }
+            else if (href.indexOf("/p/")===0 || href.indexOf("/v/")===0) {
+            // special multi-page routing
+            console.debug('Special internal page route: ' + href)
+            
+            var l = href.replace('/p/','/v/')
+            
+            // reroute
+            e.preventDefault()
+            var newLoc = l + '?from=internal'
+            console.debug('Internal view will reroute to ' + newLoc) 
+            location.href = newLoc
+            }
+            else if (href.indexOf("./")===0) {
+            // special multi-page routing
+            console.debug('Special internal ./ route: ' + href)
+            
+            var u = parent.document.URL.split("/")
+            var pn = href.split("/")[1]
+            var plyId = u[u.length-1]
+            
+            if (plyId.indexOf('?from')>-1) {
+            // already rerouted this
+            console.debug('already rerouted')
+            plyId = u[u.length-2]
+            }
+            
+            var l = plyId + '/' + pn
+            
+            console.debug(u)
+            console.debug(pn)
+            console.debug('l',l)
+            
+            // reroute
+            e.preventDefault()
+            var newLoc = '/v/' + l + '?from=internal'
+            console.debug('Internal page will reroute to ' + newLoc) 
+            location.href = newLoc
+            }
+            else {
+            // no external links
+            e.preventDefault();
+            console.debug('External nav prevented by Codeply');
+            }
+            //return false;
+            })
+            }
+            }, null);
+            </script>
+            $.fn.pageMe = function(opts){
+            var $this = this,
+            defaults = {
+            perPage: 20,
+            showPrevNext: false,
+            hidePageNumbers: false
+            },
+            settings = $.extend(defaults, opts);
+            
+            var listElement = $this;
+            var perPage = settings.perPage; 
+            var children = listElement.children();
+            var pager = $('.pager');
+            
+            if (typeof settings.childSelector!="undefined") {
+            children = listElement.find(settings.childSelector);
+            }
+            
+            if (typeof settings.pagerSelector!="undefined") {
+            pager = $(settings.pagerSelector);
+            }
+            
+            var numItems = children.size();
+            var numPages = Math.ceil(numItems/perPage);
+            
+            pager.data("curr",0);
+            
+            if (settings.showPrevNext){
+            $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
+            }
+            
+            var curr = 0;
+            while(numPages > curr && (settings.hidePageNumbers==false)){
+            $('<li><a href="#" class="page_link">'+(curr+1)+'</a></li>').appendTo(pager);
+            curr++;
+            }
+            
+            if (settings.showPrevNext){
+            $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
+            }
+            
+            pager.find('.page_link:first').addClass('active');
+            pager.find('.prev_link').hide();
+            if (numPages<=1) {
+            pager.find('.next_link').hide();
+            }
+            pager.children().eq(1).addClass("active");
+            
+            children.hide();
+            children.slice(0, perPage).show();
+            
+            pager.find('li .page_link').click(function(){
+            var clickedPage = $(this).html().valueOf()-1;
+            goTo(clickedPage,perPage);
+            return false;
+            });
+            pager.find('li .prev_link').click(function(){
+            previous();
+            return false;
+            });
+            pager.find('li .next_link').click(function(){
+            next();
+            return false;
+            });
+            
+            function previous(){
+            var goToPage = parseInt(pager.data("curr")) - 1;
+            goTo(goToPage);
+            }
+            
+            function next(){
+            goToPage = parseInt(pager.data("curr")) + 1;
+            goTo(goToPage);
+            }
+            
+            function goTo(page){
+            var startAt = page * perPage,
+            endOn = startAt + perPage;
+            
+            children.css('display','none').slice(startAt, endOn).show();
+            
+            if (page>=1) {
+            pager.find('.prev_link').show();
+            }
+            else {
+            pager.find('.prev_link').hide();
+            }
+            
+            if (page<(numPages-1)) {
+            pager.find('.next_link').show();
+            }
+            else {
+            pager.find('.next_link').hide();
+            }
+            
+            pager.data("curr",page);
+            pager.children().removeClass("active");
+            pager.children().eq(page+1).addClass("active");
+            
+            }
+            };
+            
+            $(document).ready(function(){
+            
+            $('#genomicTable').pageMe({pagerSelector:'#genomicPager',showPrevNext:true,hidePageNumbers:false,perPage:4});
             
             });
             </script>
