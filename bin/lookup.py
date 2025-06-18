@@ -180,7 +180,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
                 genomic_df = pd.concat([genomic_df, new_can], ignore_index=True)
             
         html = genomic_df.to_html(index=False, show_dimensions=True)
-        html = html.replace('<tbody>', '<tbody id="genomicTable">')
+        html = html.replace('<table border="1" class="dataframe">', '<table border="1" class="dataframe" id="genomicTable">')
         return html
 
     def column_separate(table, column, convert_table):
@@ -602,7 +602,7 @@ text-decoration: none;
 <div class="table-responsive">
        ''')
         clinical_html = all_clinical_table(participant_id).to_html(index=False, show_dimensions=True)
-        clinical_html = clinical_html.replace('<tbody>', '<tbody id="clinicalTable">')
+        clinical_html = clinical_html.replace('<table border="1" class="dataframe">', '<table border="1" class="dataframe" id="clinicalTable">')
         out.write(clinical_html)
         out.write('''</div></div></div>''')
         clinical_graph(participant_id)
