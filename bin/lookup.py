@@ -611,7 +611,7 @@ text-decoration: none;
         out.write('''</div></div></div><div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="clinicalPager"></ul></div>''')
         clinical_graph(participant_id)
-        out.write(f"<img src={participant_id}_graph.png>")
+        out.write(f"<img src=results/{participant_id}_graph.png>")
         out.write('''<!--JAVASCRIPT-->
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
