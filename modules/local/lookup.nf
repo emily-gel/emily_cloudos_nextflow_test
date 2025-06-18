@@ -16,6 +16,7 @@ process LOOKUP {
 
     output:
     path "${id}_output.html"
+    path "${id}_graph.png"
 
     script: 
     """
