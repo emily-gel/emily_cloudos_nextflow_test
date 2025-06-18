@@ -3,7 +3,7 @@ import click
 from sqlalchemy import create_engine, event, text
 import pandas as pd
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 @click.command()
 @click.option( "--participant_id", type=int, required=True)
@@ -517,21 +517,21 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
         table = table.sort_values(by=['date'])
         return(table)
 
-    # def clinical_graph(participant_id):
-    #     input = all_clinical_table(participant_id).dropna()
-    #     height = len(pd.unique(input['event']))/5
-    #     input['event_trunc'] = input['event'].apply(lambda x: x[:20])
+    def clinical_graph(participant_id):
+        input = all_clinical_table(participant_id).dropna()
+        height = len(pd.unique(input['event']))/5
+        input['event_trunc'] = input['event'].apply(lambda x: x[:20])
         
-    #     plt.plot_date(input['date'], input['event_trunc'], xdate=True, ydate=False)
-    #     plt.xticks(rotation=70)
-    #     plt.figure(figsize=(10,height))
-    #     groups = input.groupby('source')
-    #     for name, group in groups:
-    #         plt.plot(group.date, group.event_trunc, marker='o', linestyle='', markersize=3, label=name)
-    #     plt.legend()
-    #     plt.xlabel('Date of event')
-    #     plt.ylabel('Event')
-    #     plt.savefig(f'{participant_id}_graph.png', bbox_inches='tight')
+        plt.plot_date(input['date'], input['event_trunc'], xdate=True, ydate=False)
+        plt.xticks(rotation=70)
+        plt.figure(figsize=(10,height))
+        groups = input.groupby('source')
+        for name, group in groups:
+            plt.plot(group.date, group.event_trunc, marker='o', linestyle='', markersize=3, label=name)
+        plt.legend()
+        plt.xlabel('Date of event')
+        plt.ylabel('Event')
+        plt.savefig(f'{participant_id}_graph.png', bbox_inches='tight')
 
     def html (participant_id):
         out = open(f"{participant_id}_output.html", "x")
@@ -610,8 +610,8 @@ text-decoration: none;
         out.write(clinical_html)
         out.write('''</div></div></div><div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="clinicalPager"></ul></div>''')
-        # clinical_graph(participant_id)
-        # out.write(f"<img src={participant_id}_graph.png>")
+        clinical_graph(participant_id)
+        out.write(f"<img src={participant_id}_graph.png>")
         out.write('''<!--JAVASCRIPT-->
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
