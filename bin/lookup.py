@@ -811,6 +811,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             }
             }, null);
             </script>
+            <script>
             $.fn.pageMe = function(opts){
             var $this = this,
             defaults = {
