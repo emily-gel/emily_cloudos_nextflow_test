@@ -609,7 +609,7 @@ text-decoration: none;
         out.write(f"<img src=results/{participant_id}_graph.png>")
         out.write('''<!--JAVASCRIPT-->
 <script>
-addPagerToTables('#clinicalTable, #clinicalTable', 10);
+addPagerToTables('#genomicTable, #clinicalTable', 10);
 function addPagerToTables(tables, rowsPerPage = 10) {
 
     tables = 
