@@ -537,9 +537,6 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
         out = open(f"{participant_id}_output.html", "x")
         css = '''<html>
 <head>
-<!--BOOTSTRAP PLUGIN-->
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <style>
 body { font-family: Avenir, sans-serif; }
 td, th {
@@ -598,8 +595,7 @@ text-decoration: none;
 <div class="table-responsive">
        ''')
         out.write(genomic(participant_id))  
-        out.write('''</div></div></div><div class="col-md-12 text-center">
-            <ul class="pagination pagination-lg pager" id="genomicPager"></ul></div>''')
+        out.write('''</div></div></div></div>''')
         out.write('''<h2>Clinical data</h2>
 <div class="container">
 <div class="row">
@@ -608,318 +604,97 @@ text-decoration: none;
         clinical_html = all_clinical_table(participant_id).to_html(index=False, show_dimensions=True)
         clinical_html = clinical_html.replace('<tbody>', '<tbody id="clinicalTable">')
         out.write(clinical_html)
-        out.write('''</div></div></div><div class="col-md-12 text-center">
-            <ul class="pagination pagination-lg pager" id="clinicalPager"></ul></div>''')
+        out.write('''</div></div></div>''')
         clinical_graph(participant_id)
         out.write(f"<img src=results/{participant_id}_graph.png>")
         out.write('''<!--JAVASCRIPT-->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script>
-$.fn.pageMe = function(opts){
-var $this = this,
-defaults = {
-perPage: 20,
-showPrevNext: false,
-hidePageNumbers: false
-},
-settings = $.extend(defaults, opts);
+addPagerToTables('#clinicalTable, #clinicalTable', 10);
+function addPagerToTables(tables, rowsPerPage = 10) {
 
-var listElement = $this;
-var perPage = settings.perPage; 
-var children = listElement.children();
-var pager = $('.pager');
+    tables = 
+        typeof tables == "string"
+      ? document.querySelectorAll(tables)
+      : tables;
 
-if (typeof settings.childSelector!="undefined") {
-children = listElement.find(settings.childSelector);
+    for (let table of tables) 
+        addPagerToTable(table, rowsPerPage);
 }
+function addPagerToTable(table, rowsPerPage = 10) {
 
-if (typeof settings.pagerSelector!="undefined") {
-pager = $(settings.pagerSelector);
-}
+    let tBodyRows = getBodyRows(table);
+    let numPages = Math.ceil(tBodyRows.length/rowsPerPage);
 
-var numItems = children.size();
-var numPages = Math.ceil(numItems/perPage);
+    let colCount = 
+      [].slice.call(
+          table.querySelector('tr').cells
+      )
+      .reduce((a,b) => a + parseInt(b.colSpan), 0);
 
-pager.data("curr",0);
+    table
+    .createTFoot()
+    .insertRow()
+    .innerHTML = `<td colspan=${colCount}><div class="nav"></div></td>`;
 
-if (settings.showPrevNext){
-$('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
-}
+    if(numPages == 1)
+        return;
 
-var curr = 0;
-while(numPages > curr && (settings.hidePageNumbers==false)){
-$('<li><a href="#" class="page_link">'+(curr+1)+'</a></li>').appendTo(pager);
-curr++;
-}
+    for(i = 0;i < numPages;i++) {
 
-if (settings.showPrevNext){
-$('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
-}
+        let pageNum = i + 1;
 
-pager.find('.page_link:first').addClass('active');
-pager.find('.prev_link').hide();
-if (numPages<=1) {
-pager.find('.next_link').hide();
-}
-pager.children().eq(1).addClass("active");
+        table.querySelector('.nav')
+        .insertAdjacentHTML(
+            'beforeend',
+            `<a href="#" rel="${i}">${pageNum}</a> `        
+        );
 
-children.hide();
-children.slice(0, perPage).show();
+    }
 
-pager.find('li .page_link').click(function(){
-var clickedPage = $(this).html().valueOf()-1;
-goTo(clickedPage,perPage);
-return false;
-});
-pager.find('li .prev_link').click(function(){
-previous();
-return false;
-});
-pager.find('li .next_link').click(function(){
-next();
-return false;
-});
+    changeToPage(table, 1, rowsPerPage);
 
-function previous(){
-var goToPage = parseInt(pager.data("curr")) - 1;
-goTo(goToPage);
-}
-
-function next(){
-goToPage = parseInt(pager.data("curr")) + 1;
-goTo(goToPage);
-}
-
-function goTo(page){
-var startAt = page * perPage,
-endOn = startAt + perPage;
-
-children.css('display','none').slice(startAt, endOn).show();
-
-if (page>=1) {
-pager.find('.prev_link').show();
-}
-else {
-pager.find('.prev_link').hide();
-}
-
-if (page<(numPages-1)) {
-pager.find('.next_link').show();
-}
-else {
-pager.find('.next_link').hide();
-}
-
-pager.data("curr",page);
-pager.children().removeClass("active");
-pager.children().eq(page+1).addClass("active");
+    for (let navA of table.querySelectorAll('.nav a'))
+        navA.addEventListener(
+            'click', 
+            e => changeToPage(
+                table, 
+                parseInt(e.target.innerHTML), 
+                rowsPerPage
+            )
+        );
 
 }
-};
+function changeToPage(table, page, rowsPerPage) {
 
-$(document).ready(function(){
+    let startItem = (page - 1) * rowsPerPage;
+    let endItem = startItem + rowsPerPage;
+    let navAs = table.querySelectorAll('.nav a');
+    let tBodyRows = getBodyRows(table);
 
-$('#clinicalTable').pageMe({pagerSelector:'#clinicalPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
+    for (let nix = 0; nix < navAs.length; nix++) {
 
-});
-</script>
-<script>
-$.fn.pageMe = function(opts){
-var $this = this,
-defaults = {
-perPage: 20,
-showPrevNext: false,
-hidePageNumbers: false
-},
-settings = $.extend(defaults, opts);
+        if (nix == page - 1)
+            navAs[nix].classList.add('active');
+        else 
+            navAs[nix].classList.remove('active');
 
-var listElement = $this;
-var perPage = settings.perPage; 
-var children = listElement.children();
-var pager = $('.pager');
+        for (let trix = 0; trix < tBodyRows.length; trix++) 
+            tBodyRows[trix].style.display = 
+                (trix >= startItem && trix < endItem)
+                ? 'table-row'
+                : 'none';  
 
-if (typeof settings.childSelector!="undefined") {
-children = listElement.find(settings.childSelector);
+    }
 }
-
-if (typeof settings.pagerSelector!="undefined") {
-pager = $(settings.pagerSelector);
+// tbody might still capture header rows if 
+// if a thead was not created explicitly.
+// This filters those rows out.
+function getBodyRows(table) {
+    let initial = table.querySelectorAll('tbody tr');
+  return Array.from(initial)
+    .filter(row => row.querySelectorAll('td').length > 0);
 }
-
-var numItems = children.size();
-var numPages = Math.ceil(numItems/perPage);
-
-pager.data("curr",0);
-
-if (settings.showPrevNext){
-$('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
-}
-
-var curr = 0;
-while(numPages > curr && (settings.hidePageNumbers==false)){
-$('<li><a href="#" class="page_link">'+(curr+1)+'</a></li>').appendTo(pager);
-curr++;
-}
-
-if (settings.showPrevNext){
-$('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
-}
-
-pager.find('.page_link:first').addClass('active');
-pager.find('.prev_link').hide();
-if (numPages<=1) {
-pager.find('.next_link').hide();
-}
-pager.children().eq(1).addClass("active");
-
-children.hide();
-children.slice(0, perPage).show();
-
-pager.find('li .page_link').click(function(){
-var clickedPage = $(this).html().valueOf()-1;
-goTo(clickedPage,perPage);
-return false;
-});
-pager.find('li .prev_link').click(function(){
-previous();
-return false;
-});
-pager.find('li .next_link').click(function(){
-next();
-return false;
-});
-
-function previous(){
-var goToPage = parseInt(pager.data("curr")) - 1;
-goTo(goToPage);
-}
-
-function next(){
-goToPage = parseInt(pager.data("curr")) + 1;
-goTo(goToPage);
-}
-
-function goTo(page){
-var startAt = page * perPage,
-endOn = startAt + perPage;
-
-children.css('display','none').slice(startAt, endOn).show();
-
-if (page>=1) {
-pager.find('.prev_link').show();
-}
-else {
-pager.find('.prev_link').hide();
-}
-
-if (page<(numPages-1)) {
-pager.find('.next_link').show();
-}
-else {
-pager.find('.next_link').hide();
-}
-
-pager.data("curr",page);
-pager.children().removeClass("active");
-pager.children().eq(page+1).addClass("active");
-
-}
-};
-
-$(document).ready(function(){
-
-$('#genomicTable').pageMe({pagerSelector:'#genomicPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
-
-});
-</script>
-<script>
-// prevent navigation
-document.addEventListener("DOMContentLoaded", function() {
-var links = document.getElementsByTagName("A");
-for(var i=0; i < links.length; i++) {
-links[i].addEventListener("click", function(e) {
-var href = this.getAttribute("href")
-
-if (!href) {
-return
-}
-
-if (href === '#') {
-// hash only ('#')
-console.debug('Internal nav allowed by Codeply');
-e.preventDefault()
-}
-else if (this.hash) {
-// hash with tag ('#foo')
-var element = null
-try {
-element = document.querySelector(this.hash)
-}
-catch(e) {
-console.debug('Codeply internal nav querySelector failed')
-}
-if (element) {
-// scroll to anchor
-e.preventDefault();
-const top = element.getBoundingClientRect().top + window.pageYOffset
-//window.scrollTo({top, behavior: 'smooth'})
-window.scrollTo(0,top)
-console.debug('Internal anchor controlled by Codeply to element:' + this.hash)
-}
-else {
-// allow javascript routing
-console.debug('Internal nav route allowed by Codeply');
-}
-}
-else if (href.indexOf("/p/")===0 || href.indexOf("/v/")===0) {
-// special multi-page routing
-console.debug('Special internal page route: ' + href)
-
-var l = href.replace('/p/','/v/')
-
-// reroute
-e.preventDefault()
-var newLoc = l + '?from=internal'
-console.debug('Internal view will reroute to ' + newLoc) 
-location.href = newLoc
-}
-else if (href.indexOf("./")===0) {
-// special multi-page routing
-console.debug('Special internal ./ route: ' + href)
-
-var u = parent.document.URL.split("/")
-var pn = href.split("/")[1]
-var plyId = u[u.length-1]
-
-if (plyId.indexOf('?from')>-1) {
-// already rerouted this
-console.debug('already rerouted')
-plyId = u[u.length-2]
-}
-
-var l = plyId + '/' + pn
-
-console.debug(u)
-console.debug(pn)
-console.debug('l',l)
-
-// reroute
-e.preventDefault()
-var newLoc = '/v/' + l + '?from=internal'
-console.debug('Internal page will reroute to ' + newLoc) 
-location.href = newLoc
-}
-else {
-// no external links
-e.preventDefault();
-console.debug('External nav prevented by Codeply');
-}
-//return false;
-})
-}
-}, null);
-</script>
+  </script>
 </body></html>''')
         out.close()
     html(participant_id)
