@@ -563,26 +563,41 @@ th {
   background-color: #df007d;
   color: white;
 }
-.pager li>a, .pager li>span {
-display: inline-block;
-padding: 5px 14px;
-border: 1px solid #df007d;
-border-radius: 15px;
+
+    ul {
+  list-style-type: none;
+  overflow: hidden;
+  background-color: #333;
 }
-.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
-z-index: 3;
-color: #fff;
-cursor: default;
-background-color: #df007d;
-border-color: #df007d;
-}                
-.pagination>li>a, .pagination>li>span {
-position: relative;
-float: left;
-margin-left: -1px;
-color: #df007d;
-text-decoration: none;
+
+li {
+  float: left;
 }
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  border: 1px solid #df007d;
+  padding: 8px 16px;
+}
+
+a:not(.active) {
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid #df007d;
+  padding: 8px 16px;
+  color: #df007d
+
+}
+
+.active {
+  background-color: #df007d;
+  border-radius: 5px;
+  padding: 8px 16px;
+  color: white
 </style>
 </head>
 <body>'''
