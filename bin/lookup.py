@@ -630,7 +630,7 @@ a:not(.active) {
         out.write(clinical_html)
         out.write('''</div></div></div>''')
         clinical_graph(participant_id)
-        out.write(f"<img src=results/{participant_id}_graph.png>")
+        out.write(f"<img src={participant_id}_graph.png>")
         out.write('''<!--JAVASCRIPT-->
 <script>
 addPagerToTables('#genomicTable, #clinicalTable', 10);
