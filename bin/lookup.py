@@ -263,7 +263,7 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             ecds_query = column_separate(ecds_query, 'diag_all', snomed)
             ecds_query['source'] = 'Emergency care dataset: SNOMED CT'
             diag_table = pd.concat([diag_table, ecds_query])
-        
+        print(diag_table)
         diag_table['event'] = diag_table['diag_all'] + ": " + diag_table['meaning']
         
         return (diag_table[['participant_id', 'date', 'event', 'source']])
