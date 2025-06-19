@@ -264,7 +264,9 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             ecds_query['source'] = 'Emergency care dataset: SNOMED CT'
             diag_table = pd.concat([diag_table, ecds_query])
         print(diag_table)
-        diag_table['event'] = diag_table['diag_all'] + ": " + diag_table['meaning']
+
+        if not diag_table.empty:
+            diag_table['event'] = diag_table['diag_all'] + ": " + diag_table['meaning']
         
         return (diag_table[['participant_id', 'date', 'event', 'source']])
         
@@ -304,8 +306,9 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             ecds_invest_query = column_separate(ecds_invest_query, 'invest_all', snomed)
             ecds_invest_query['source'] = 'Emergency care dataset: SNOMED CT code'
             invest_table = pd.concat([ecds_invest_query, invest_table])
-    
-        invest_table['event'] = invest_table['invest_all'] + ": " + invest_table['meaning']
+
+        if not invest_table.empty:
+            invest_table['event'] = invest_table['invest_all'] + ": " + invest_table['meaning']
         
         return (invest_table[['participant_id', 'date', 'event', 'source']])
 
@@ -357,8 +360,8 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             ecds_treat_query = column_separate(ecds_treat_query, 'treat_all', snomed)
             ecds_treat_query['source'] = 'Emergency care dataset: SNOMED CT'
             treat_table = pd.concat([ecds_treat_query, treat_table])
-    
-        treat_table['event'] = treat_table['treat_all'] + ": " + treat_table['meaning']
+        if not treat_table.empty:
+            treat_table['event'] = treat_table['treat_all'] + ": " + treat_table['meaning']
         return (treat_table[['participant_id', 'date', 'event', 'source']])
 
     def recruited (participant_id):
