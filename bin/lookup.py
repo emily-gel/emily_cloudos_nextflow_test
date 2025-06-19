@@ -582,6 +582,7 @@ li a {
   border-radius: 5px;
   border: 1px solid #df007d;
   padding: 8px 16px;
+  margin: 8px 16px;
 }
 
 a:not(.active) {
@@ -590,6 +591,7 @@ a:not(.active) {
   border: 1px solid #df007d;
   padding: 8px 16px;
   color: #df007d
+  margin: 8px 16px;
 
 }
 
@@ -597,6 +599,7 @@ a:not(.active) {
   background-color: #df007d;
   border-radius: 5px;
   padding: 8px 16px;
+  margin: 8px 16px;
   color: white
 </style>
 </head>
