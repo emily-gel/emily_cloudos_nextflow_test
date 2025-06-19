@@ -267,8 +267,9 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
 
         if not diag_table.empty:
             diag_table['event'] = diag_table['diag_all'] + ": " + diag_table['meaning']
+            diag_table = diag_table[['participant_id', 'date', 'event', 'source']]
         
-        return (diag_table[['participant_id', 'date', 'event', 'source']])
+        return (diag_table)
         
     def investigations (part_id):
     
@@ -309,8 +310,9 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
 
         if not invest_table.empty:
             invest_table['event'] = invest_table['invest_all'] + ": " + invest_table['meaning']
+            invest_table = invest_table[['participant_id', 'date', 'event', 'source']]
         
-        return (invest_table[['participant_id', 'date', 'event', 'source']])
+        return (invest_table)
 
     def treatments (part_id):
 
@@ -362,7 +364,8 @@ def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, 
             treat_table = pd.concat([ecds_treat_query, treat_table])
         if not treat_table.empty:
             treat_table['event'] = treat_table['treat_all'] + ": " + treat_table['meaning']
-        return (treat_table[['participant_id', 'date', 'event', 'source']])
+            treat_table = treat_table[['participant_id', 'date', 'event', 'source']]
+        return (treat_table)
 
     def recruited (participant_id):
         type_sql = (f''' SELECT programme
