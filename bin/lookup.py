@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 def query(participant_id, ae_ana, ae_con, ae_inv, ae_side, ae_tre, icd10, opcs, snomed):
     print (ae_con)
 
-    version = "source_data_100kv16_covidv4"
+    version = "source_data_main_programme_v19"
     
     def query_to_df(sql_query, version):
         database = "gel_clinical_cb_sql_pro"
